@@ -1,0 +1,16 @@
+{
+
+"notty":
+[{
+	"theme": "dark",
+
+	"title": "notty",
+	"title-separator": "-",
+	"title-edited": "#",
+
+	"show-menu": "true", // true / false
+	"show-panel": "true", // true / false
+	"show-lines-panel": "true" // true / false
+}]
+
+}

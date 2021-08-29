@@ -1,0 +1,17 @@
+{
+	"textbox": [
+		{
+		"bg": "#cfcaca",
+		"fg": "black",
+		"font": "Consolas 10",
+		"caret": "orange"
+		}
+	],
+	"panel": [
+		{
+		"bg": "whitesmoke",
+		"fg": "black",
+		"font": "Consolas 10"
+		}
+	]
+}
