@@ -55,6 +55,8 @@ except ImportError:
 	err_syntax = True
 	print ('(!) syntax lib import error')
 
+onstart = True
+
 extension = None
 path = None
 syntax = 'text'
@@ -81,7 +83,10 @@ def edit_event (event):
 	lines = 1
 	lines_p = ''
 	while lines <= count:
-		lines_p += str(lines) + '\n'
+		if lines == count:
+			lines_p += str(lines)
+		else:
+			lines_p += str(lines) + '\n'
 		lines += 1
 	left_p ['state'] = 'normal'
 	left_p.delete ('1.0', 'end')
@@ -101,7 +106,7 @@ def edit_event (event):
 				)
 	except TypeError:
 		w.title (
-			title_error + ''  + title_separator + ' ' + title
+			title_error + ' '  + title_separator + ' ' + title
 			)
 		print ('(!) unknown title error')
 
@@ -111,7 +116,8 @@ def exit (event):
 
 def new (event):
 	
-	global path
+	global path, onstart
+	onstart = False
 	p_syntax ['text'] = 'plain text'
 	textbox.delete ('1.0', 'end')
 	w.title (
@@ -142,7 +148,8 @@ def new (event):
 
 def openfile (event):
 
-	global path, edit, err_ftypes, extension, syntax
+	global path, edit, err_ftypes, extension, syntax, onstart
+	onstart = False
 	verscroll.pack (
 		fill = 'y',
 		side = 'right'
@@ -188,7 +195,7 @@ def openfile (event):
 			)
 	except TypeError:
 		w.title (
-			title_error + ''  + title_separator + ' ' + title
+			title_error + ' '  + title_separator + ' ' + title
 			)
 		print ('(!) unknown title error')
 
@@ -221,7 +228,7 @@ def save(event):
 			)
 	except TypeError:
 		w.title (
-			title_error + ''  + title_separator + ' ' + title
+			title_error + ' '  + title_separator + ' ' + title
 			)
 		print ('(!) unknown title error')
 def saveas(event):
@@ -243,7 +250,7 @@ def saveas(event):
 			)
 	except TypeError:
 		w.title (
-			title_error + ''  + title_separator + ' ' + title
+			title_error + ' '  + title_separator + ' ' + title
 			)
 		print ('(!) unknown title error')
 
@@ -268,7 +275,7 @@ def config_open (event):
 			fill = 'both',
 			expand = True
 			)
-		global path, edit, syntax
+		global path, edit, syntax, onstart
 		path = 'editor/config.json'
 		if path == '':
 			return
@@ -281,13 +288,14 @@ def config_open (event):
 		if err_syntax != True:
 			s.tokens_get (textbox, s.JsonLexer ())
 		p_syntax ['text'] = 'config'
+		onstart = False
 		try:
 			w.title (
 				'config ' + title_separator + ' ' + title
 				)
 		except TypeError:
 			w.title (
-				title_error + ''  + title_separator + ' ' + title
+				title_error + ' '  + title_separator + ' ' + title
 				)
 		print ('(!) unknown title error')
 	except FileNotFoundError:
@@ -434,26 +442,61 @@ p = tk.Frame (w,
 p_hided = False
 def p_hide ():
 
-	global p_hided
+	global p_hided, p
 	if p_hided == False:
-		p.destroy ()
+		p.pack_forget ()
+		p_hided = True
 	else:
+		verscroll.pack_forget ()
+		horscroll.pack_forget ()
+		left_p.pack_forget ()
+		textbox.pack_forget ()
 		p.pack(
 			side = 'bottom',
 			fill = 'x'
 			)
+		if onstart == False:
+			verscroll.pack (
+				fill = 'y',
+				side = 'right'
+				)
+			horscroll.pack (
+				fill = 'x',
+				side = 'bottom'
+				)
+			if left_p_hided == False:
+				if show_left_p != 'false':
+					left_p.pack (
+						fill = 'y',
+						side = 'left'
+						)
+			textbox.pack (
+				side = 'left',
+				fill = 'both',
+				expand = True
+				)
+		p_hided = False
 
 left_p_hided = False
 def left_p_hide ():
 
-	global left_p_hided
+	global left_p_hided, left_p
 	if left_p_hided == False:
-		left_p.destroy ()
+		left_p.pack_forget ()
+		left_p_hided = True
 	else:
-		left_p.pack(
-			side = 'left',
-			fill = 'y'
-			)
+		textbox.pack_forget ()
+		if onstart == False:
+			left_p.pack (
+				fill = 'y',
+				side = 'left'
+				)
+			textbox.pack (
+				side = 'left',
+				fill = 'both',
+				expand = True
+				)
+		left_p_hided = False
 
 p_pos = tk.Label (p,
 	bg = 'whitesmoke',
@@ -477,7 +520,7 @@ left_p = tk.Text (w,
 	relief = 'flat',
 	font = 'Consolas 10',
 	highlightthickness = 0,
-	width = 4
+	width = 6
 	)
 
 def multiple_yview(*args):
@@ -611,7 +654,8 @@ def changelog_menu ():
 			fill = 'both',
 			expand = True
 			)
-		global path, edit, syntax
+		global path, edit, syntax, onstart
+		onstart = False
 		path = 'CHANGELOG.md'
 		if path == '':
 			return
@@ -630,7 +674,7 @@ def changelog_menu ():
 				)
 		except TypeError:
 			w.title (
-				title_error + ''  + title_separator + ' ' + title
+				title_error + ' '  + title_separator + ' ' + title
 				)
 		print ('(!) unknown title error')
 	except FileNotFoundError:
@@ -750,6 +794,7 @@ def glaunch():
 	manifest_check()
 	pack ()
 	w.title (title)
+	w.tk.call('wm', 'iconphoto', w._w, tk.PhotoImage (file = 'icon.png') )
 	w.geometry ('700x400+50+50')
 	w.mainloop ()
 

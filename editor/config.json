@@ -8,9 +8,9 @@
 	"title-separator": "-",
 	"title-edited": "#",
 
-	"show-menu": "true", // true / false
-	"show-panel": "true", // true / false
-	"show-lines-panel": "true" // true / false
+	"show-menu": "true",
+	"show-panel": "true",
+	"show-lines-panel": "true"
 }]
 
 }
